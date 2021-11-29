@@ -80,12 +80,12 @@ fi
 systemctl daemon-reload
 systemctl enable wpa_cli@${interfaceWifi}.service
 
-$hostName=$(hostname -s)
+hostName=$(hostname -s)
 
 ## Configure wpa_supplicant.conf file
 if [ ! -f /etc/wpa_supplicant/wpa_supplicant-${interfaceWifi}.conf ] ; then
 	if [ -f /etc/wpa_supplicant/wpa_supplicant.conf ] ; then
-		cp /etc/wpa_supplicant/wpq_supplicant.conf /etc/wpa_supplicant/wpa_supplicant-${interfaceWifi}.conf
+		cp /etc/wpa_supplicant/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant-${interfaceWifi}.conf
 	else
 		cat > /etc/wpa_supplicant/wpa_supplicant-${interfaceWifi}.conf <<-EOF
 			update_config=1
