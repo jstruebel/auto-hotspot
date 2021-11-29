@@ -79,5 +79,34 @@ fi
 
 systemctl daemon-reload
 systemctl enable wpa_cli@${interfaceWifi}.service
+
+$hostName=$(hostname -s)
+
+## Configure wpa_supplicant.conf file
+if [ ! -f /etc/wpa_supplicant/wpa_supplicant-${interfaceWifi}.conf ] ; then
+	if [ -f /etc/wpa_supplicant/wpa_supplicant.conf ] ; then
+		cp /etc/wpa_supplicant/wpq_supplicant.conf /etc/wpa_supplicant/wpa_supplicant-${interfaceWifi}.conf
+	else
+		cat > /etc/wpa_supplicant/wpa_supplicant-${interfaceWifi}.conf <<-EOF
+			update_config=1
+			country=US
+		
+			network={
+			    priority=0
+			    ssid="${hostName}"
+			    mode=2
+			    key_mgmt=WPA-PSK
+			    psk="PiBotAccessPoint"
+			    frequency=2462
+			}
+		EOF
+	fi
+fi
+
+if ! grep -Fq "ssid=\"${hostName}\"" /etc/wpa_supplicant/wpa_supplicant-${interfaceWifi}.conf ; then
+	sed -i "s|network={|network={\n    priority=0\n    ssid=\"${hostName}\"\n    mode=2\n    key_mgmt=WPA-PSK\n    psk=\"PiBotAccessPoint\"\n    frequency=2462\n}\n\nnetwork={|" /etc/wpa_supplicant/wpa_supplicant-${interfaceWifi}.conf
+fi
+
+
 echo "Reboot now!"
 exit 0
